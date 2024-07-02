@@ -1,11 +1,18 @@
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { StartWorkout } from "./StartWorkout"
+import { CurrentWorkout } from "./CurrentWorkout"
+
 function App() {
 
   return (
-    <div>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold text-blue-500">Hello, Vite and React with Tailwind CSS!</h1>
-    </div>
-    </div>
+    <BrowserRouter>
+      <div>
+      <Routes>
+          <Route path="/" element={<StartWorkout />} />
+          <Route path="/workout" element={<CurrentWorkout />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 
