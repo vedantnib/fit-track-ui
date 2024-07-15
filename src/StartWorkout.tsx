@@ -1,18 +1,76 @@
 import { MenuItem } from "@mui/material"
 import Select, { SelectChangeEvent } from "@mui/material/Select"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import InProgressWorkoutTile from "./InProgressWorkoutTile"
+import axios from "axios"
+import LastCompletedWorkoutTile from "./LastCompletedWorkoutTile"
 
-export const StartWorkout = () => {
-    const navigate = useNavigate()
-    const [workoutType, setWorkoutType] = useState<string>()
+interface StartWorkoutProps {
+    endpoint: string,
+    userId: string
+}
+
+export const StartWorkout = ({
+    endpoint, userId
+}: StartWorkoutProps) => {
+    const navigate = useNavigate();
+    const [workoutType, setWorkoutType] = useState<string>();
+    const [inProgressWorkoutId, setInProgressWorkoutId] = useState<string | undefined>()
+    const [inProgressWorkoutType, setInProgressWorkoutType] = useState<string | undefined>()
+    const [lastCompletedWorkout, setLastCompletedWorkout] = useState<any>()
+
     const handleChange = (event: SelectChangeEvent) => {
-        setWorkoutType(event.target.value as string)
-    }
+        setWorkoutType(event.target.value as string);
+    };
 
-    // const startWorkout = () => {
+    useEffect(() => {
+        axios.get(endpoint + `/api/v1/workouts/${userId}?status=IN_PROGRESS`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }).then(( { data }) => {
+            const workoutInProgress = data
+            if (workoutInProgress.length > 0) {
+                const inProgressWorkoutId = workoutInProgress[0]?.workoutId
+                const inProgressWorkoutType = workoutInProgress[0]?.workoutType
+                setInProgressWorkoutId(inProgressWorkoutId)
+                setInProgressWorkoutType(inProgressWorkoutType)
+            }
+            axios.get(endpoint + `/api/v1/workouts/${userId}/workout/latest`).then(({ data })=> {
+                if (data) setLastCompletedWorkout(data)
+            })
+        })
+        
+    }, [])
 
-    // }
+    const startWorkout = async () => {
+        let data = {
+          workoutType: workoutType,
+          status: "IN_PROGRESS",
+          userId: userId,
+          start: new Date().toISOString(),
+          dateTime: new Date().toISOString(),
+        };
+      
+        try {
+          await axios.post(
+            endpoint + `/api/v1/workouts`,
+            data,
+            {
+              headers: { 
+                'Content-Type': 'application/json',
+              },
+              maxBodyLength: Infinity
+            }
+          ).then(({ data }) => {
+                const { workoutId } = data
+                navigate(`/workout/${workoutId}`)
+          })
+        } catch (error) {
+          console.error(error);
+        }
+      };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -28,22 +86,35 @@ export const StartWorkout = () => {
                     className="w-full"
                     id="workout-select"
                     value={workoutType}
-                    label="Age"
+                    label="Workout Type"
                     onChange={handleChange}
                 >
                     <MenuItem value={"CST"}>Chest, Shoulder & Triceps</MenuItem>
-                    <MenuItem value={"BB"}>Back Biceps</MenuItem>
+                    <MenuItem value={"BB"}>Back & Biceps</MenuItem>
                     <MenuItem value={"LEG"}>Legs</MenuItem>
-                    <MenuItem value={"CALI"}>Calistenics</MenuItem>
+                    <MenuItem value={"CALI"}>Calisthenics</MenuItem>
                 </Select>
             </div>
             <button
-                disabled={workoutType? false: true}
-                onClick={() => navigate('/workout')}
-                className="w-32 h-32 bg-blue-500 text-white rounded-full text-xl font-bold hover:bg-blue-700 transition duration-300"
+                disabled={!workoutType}
+                onClick={startWorkout}
+                className={`w-32 h-32 rounded-full text-xl font-bold transition duration-300 ${
+                    workoutType ? 'bg-blue-500 text-white hover:bg-blue-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
             >
                 Start
             </button>
+            {inProgressWorkoutId && (
+                <div className="mt-3">
+                    <InProgressWorkoutTile workoutId={inProgressWorkoutId} workoutType={inProgressWorkoutType}/>
+                </div>
+                
+            )}
+            {lastCompletedWorkout && (
+                <div className="mt-6">
+                    <LastCompletedWorkoutTile workout={lastCompletedWorkout}/>
+                </div>
+            )}
         </div>
-    )
+    );
 }
