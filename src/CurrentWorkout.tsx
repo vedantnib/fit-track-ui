@@ -92,6 +92,7 @@ export const CurrentWorkout = ({userId, endpoint}: CurrentWorkoutProps) => {
         // Add logic to handle ending the workout
         await axios.patch(endpoint+`/api/v1/workouts/${userId}/workout/${workoutId}`)
         .then(({ data }) => {
+            console.log("data:", data)
             navigate("/")
         })
     };
@@ -120,7 +121,7 @@ export const CurrentWorkout = ({userId, endpoint}: CurrentWorkoutProps) => {
                         {
                         
                         EXERCISE_TYPES[workoutType as string]?.map((exerciseTypeDetail: any, index: number) => {
-                            return <option value={exerciseTypeDetail.value}>{exerciseTypeDetail.label}</option>
+                            return <option key={index} value={exerciseTypeDetail.value}>{exerciseTypeDetail.label}</option>
                         })
                     }
                     </select>

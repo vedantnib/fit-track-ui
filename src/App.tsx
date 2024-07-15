@@ -4,7 +4,7 @@ import { NewWorkout } from "./NewWorkout"
 import { CurrentWorkout } from "./CurrentWorkout"
 
 function App() {
-  const localEndpoint = `http://localhost:8080`
+  //const localEndpoint = `http://localhost:8080`
   const userId = 'vedantnib'
   
   const endpoint  = `https://fit-track-backend-8fd8a014be7a.herokuapp.com`
