@@ -94,7 +94,7 @@ export const EXERCISE_TYPES: any = {
         }
 
     ],
-    "LEGS": [
+    "LEG": [
         {
             label: "Squats",
             value: "SQUATS"
@@ -113,7 +113,7 @@ export const EXERCISE_TYPES: any = {
         },
         {
             label: "Leg press",
-            value: "QUAD_MACHINE"
+            value: "LEG_PRESS"
         },
         {
             label: "Calf raises",
