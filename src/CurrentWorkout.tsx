@@ -19,7 +19,6 @@ export const CurrentWorkout = ({userId, endpoint}: CurrentWorkoutProps) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [lastRecordedExerciseId, setLastRecordedExerciseId] = useState<string | undefined>()
     const [lastRecordedExercise, setLastRecordedExercise] = useState<any>()
-    console.log("last recorded exercise: ", lastRecordedExercise)
 
     const navigate = useNavigate()
     useEffect(() => {
@@ -184,7 +183,7 @@ export const CurrentWorkout = ({userId, endpoint}: CurrentWorkoutProps) => {
                 </div>
             </form>
             {lastRecordedExercise && (
-                <LastRecordedExercise lastRecordedExercise={lastRecordedExercise}/>
+                <LastRecordedExercise workoutId = {workoutId!!} lastRecordedExercise={lastRecordedExercise}/>
             )}
         </div>
     )

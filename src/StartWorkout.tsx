@@ -1,76 +1,69 @@
-import { MenuItem } from "@mui/material"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import InProgressWorkoutTile from "./InProgressWorkoutTile"
-import axios from "axios"
-import LastCompletedWorkoutTile from "./LastCompletedWorkoutTile"
+import { MenuItem } from "@mui/material";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import InProgressWorkoutTile from "./InProgressWorkoutTile";
+import axios from "axios";
+import LastCompletedWorkoutTile from "./LastCompletedWorkoutTile";
 
 interface StartWorkoutProps {
-    endpoint: string,
-    userId: string
+    endpoint: string;
+    userId: string;
 }
 
-export const StartWorkout = ({
-    endpoint, userId
-}: StartWorkoutProps) => {
+export const StartWorkout = ({ endpoint, userId }: StartWorkoutProps) => {
     const navigate = useNavigate();
     const [workoutType, setWorkoutType] = useState<string>();
-    const [inProgressWorkoutId, setInProgressWorkoutId] = useState<string | undefined>()
-    const [inProgressWorkoutType, setInProgressWorkoutType] = useState<string | undefined>()
-    const [lastCompletedWorkout, setLastCompletedWorkout] = useState<any>()
+    const [inProgressWorkoutId, setInProgressWorkoutId] = useState<string | undefined>();
+    const [inProgressWorkoutType, setInProgressWorkoutType] = useState<string | undefined>();
+    const [lastCompletedWorkout, setLastCompletedWorkout] = useState<any>();
 
     const handleChange = (event: SelectChangeEvent) => {
         setWorkoutType(event.target.value as string);
     };
 
     useEffect(() => {
-        axios.get(endpoint + `/api/v1/workouts/${userId}?status=IN_PROGRESS`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }).then(( { data }) => {
-            const workoutInProgress = data
+        axios.get(`${endpoint}/api/v1/workouts/${userId}?status=IN_PROGRESS`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(({ data }) => {
+            const workoutInProgress = data;
             if (workoutInProgress.length > 0) {
-                const inProgressWorkoutId = workoutInProgress[0]?.workoutId
-                const inProgressWorkoutType = workoutInProgress[0]?.workoutType
-                setInProgressWorkoutId(inProgressWorkoutId)
-                setInProgressWorkoutType(inProgressWorkoutType)
+                const inProgressWorkoutId = workoutInProgress[0]?.workoutId;
+                const inProgressWorkoutType = workoutInProgress[0]?.workoutType;
+                setInProgressWorkoutId(inProgressWorkoutId);
+                setInProgressWorkoutType(inProgressWorkoutType);
             }
-            axios.get(endpoint + `/api/v1/workouts/${userId}/workout/latest`).then(({ data })=> {
-                if (data) setLastCompletedWorkout(data)
-            })
-        })
-        
-    }, [])
+            axios.get(`${endpoint}/api/v1/workouts/${userId}/workout/latest`).then(({ data }) => {
+                if (data) setLastCompletedWorkout(data);
+            });
+        });
+    }, [endpoint, userId]);
 
     const startWorkout = async () => {
         let data = {
-          workoutType: workoutType,
-          status: "IN_PROGRESS",
-          userId: userId,
-          start: new Date().toISOString(),
-          dateTime: new Date().toISOString(),
+            workoutType: workoutType,
+            status: "IN_PROGRESS",
+            userId: userId,
+            start: new Date().toISOString(),
+            dateTime: new Date().toISOString(),
         };
-      
+
         try {
-          await axios.post(
-            endpoint + `/api/v1/workouts`,
-            data,
-            {
-              headers: { 
-                'Content-Type': 'application/json',
-              },
-              maxBodyLength: Infinity
-            }
-          ).then(({ data }) => {
-                const { workoutId } = data
-                navigate(`/workout/${workoutId}`)
-          })
+            await axios.post(`${endpoint}/api/v1/workouts`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                maxBodyLength: Infinity
+            }).then(({ data }) => {
+                const { workoutId } = data;
+                navigate(`/workout/${workoutId}`);
+            });
         } catch (error) {
-          console.error(error);
+            console.error(error);
         }
-      };
+    };
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -106,15 +99,20 @@ export const StartWorkout = ({
             </button>
             {inProgressWorkoutId && (
                 <div className="mt-3">
-                    <InProgressWorkoutTile workoutId={inProgressWorkoutId} workoutType={inProgressWorkoutType}/>
+                    <InProgressWorkoutTile workoutId={inProgressWorkoutId} workoutType={inProgressWorkoutType} />
                 </div>
-                
             )}
             {lastCompletedWorkout && (
                 <div className="mt-6">
-                    <LastCompletedWorkoutTile workout={lastCompletedWorkout}/>
+                    <LastCompletedWorkoutTile workout={lastCompletedWorkout} />
                 </div>
             )}
+            <button
+                onClick={() => navigate('/workouts')}
+                className="mt-8 p-2 bg-blue-500 text-white rounded shadow hover:bg-blue-700 transition duration-300"
+            >
+                View Completed Workouts
+            </button>
         </div>
     );
-}
+};
