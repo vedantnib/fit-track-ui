@@ -103,7 +103,7 @@ export const StartWorkout = ({ endpoint, userId }: StartWorkoutProps) => {
                 </div>
             )}
             {lastCompletedWorkout && (
-                <div className="mt-6">
+                <div className="mt-6" onClick={() => navigate(`/workout/${lastCompletedWorkout.workoutId}/view`)}>
                     <LastCompletedWorkoutTile workout={lastCompletedWorkout} />
                 </div>
             )}
