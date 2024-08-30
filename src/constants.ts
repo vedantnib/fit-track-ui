@@ -42,7 +42,7 @@ export const EXERCISE_TYPES: any = {
     },
     {
         label: "Pull ups",
-        value: "PUSH_UPS"
+        value: "PULL_UPS"
     }
     ],
 
@@ -132,7 +132,7 @@ export const EXERCISE_TYPES: any = {
         },
         {
             label: "Pull ups",
-            value: "PUSH_UPS"
+            value: "PULL_UPS"
         },
         {
             label: "Abs",

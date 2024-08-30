@@ -15,12 +15,12 @@ function App() {
   return (
     <BrowserRouter>
       <div>
-      <Routes>
-          <Route path="/" element={<StartWorkout endpoint={endpoint} userId={userId}/>} />
-          <Route path="/workouts" element={<AllWorkouts userId={userId} endpoint={endpoint}/>} />
-          <Route path="/workout/:workoutId" element={<CurrentWorkout userId={userId} endpoint={endpoint}/>} />
-          <Route path="/workout/:workoutId/view" element={<WorkoutView userId={userId} endpoint={endpoint}/>} />
-          <Route path="/workout/:workoutId/exercises/:exerciseId/update" element={<ExerciseUpdate userId={userId} endpoint={endpoint}/>} />
+        <Routes>
+          <Route path="/" element={<StartWorkout endpoint={endpoint} userId={userId} />} />
+          <Route path="/workouts" element={<AllWorkouts userId={userId} endpoint={endpoint} />} />
+          <Route path="/workout/:workoutId" element={<CurrentWorkout userId={userId} endpoint={endpoint} />} />
+          <Route path="/workout/:workoutId/view" element={<WorkoutView userId={userId} endpoint={endpoint} />} />
+          <Route path="/workout/:workoutId/exercises/:exerciseId/update" element={<ExerciseUpdate userId={userId} endpoint={endpoint} />} />
         </Routes>
       </div>
     </BrowserRouter>
