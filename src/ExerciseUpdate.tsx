@@ -45,6 +45,7 @@ export const ExerciseUpdate = ({userId, endpoint}: ExerciseUpdateProps) => {
                     'Content-Type': 'application/json',
                 }
             }).then((resp) => {
+                console.log()
                 setIsSubmitting(false)
             });
             // Optionally update state or handle success message
