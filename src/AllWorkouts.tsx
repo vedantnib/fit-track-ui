@@ -18,7 +18,7 @@ export const AllWorkouts = ({ endpoint, userId }: AllWorkoutsProps) => {
     }, [resultsLimit]);
 
     const fetchCompletedWorkouts = () => {
-        axios.get(`${endpoint}/api/v1/workouts/${userId}?status=COMPLETED&limit=${resultsLimit}`, {
+        axios.get(`${endpoint}/api/v1/workouts/${userId}/latest`, {
             headers: {
                 'Content-Type': 'application/json',
             }

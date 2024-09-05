@@ -16,6 +16,7 @@ export const ExerciseUpdate = ({userId, endpoint}: ExerciseUpdateProps) => {
     const [srNo, setSrNo] = useState(0);
     const [createdAt, setCreatedAt] = useState("");
     const navigate = useNavigate()
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         axios.get(`${endpoint}/api/v1/workouts/${userId}/workout/${workoutId}/exercises/${exerciseId}`, {
@@ -37,15 +38,19 @@ export const ExerciseUpdate = ({userId, endpoint}: ExerciseUpdateProps) => {
 
     const handleSubmit = async () => {
         const updatedExercise = { exerciseId, exerciseType, reps, weight, srNo, createdAt };
+        setIsSubmitting(true)
         try {
             await axios.patch(`${endpoint}/api/v1/workouts/${userId}/workout/${workoutId}/exercises/${exerciseId}`, updatedExercise, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
+            }).then((resp) => {
+                setIsSubmitting(false)
             });
             // Optionally update state or handle success message
         } catch (error) {
             console.error("Error updating exercise:", error);
+            setIsSubmitting(false)
         }
     };
 
@@ -108,7 +113,9 @@ export const ExerciseUpdate = ({userId, endpoint}: ExerciseUpdateProps) => {
             </div>
             <div className="flex justify-end">
                 <button onClick={handleBack} className="mr-4 p-2 bg-gray-300 rounded">Back</button>
-                <button onClick={handleSubmit} className="p-2 bg-blue-500 text-white rounded">Submit</button>
+                <button onClick={handleSubmit} className={`rounded-lg p-2 transition duration-300 ${isSubmitting ? 'bg-gray-400' : 'bg-blue-500 text-white hover:bg-blue-700'}`}>
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                </button>
             </div>
         </div>
     );
